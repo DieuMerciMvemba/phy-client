@@ -37,7 +37,8 @@ export async function apiFetch(endpoint, options = {}) {
             let errorMessage = `Erreur HTTP ${response.status}`;
             try {
                 const errorData = await response.json();
-                errorMessage = errorData.message || errorData.error || errorMessage;
+                const msg = errorData.message || errorData.error;
+                errorMessage = Array.isArray(msg) ? msg.join(', ') : (msg || errorMessage);
             } catch (e) {
                 // Response wasn't JSON
             }
@@ -57,6 +58,9 @@ export async function apiFetch(endpoint, options = {}) {
             throw new Error('Connexion au serveur expirée (Serveur non joignable)');
         }
         console.warn(`[API Call Warning] ${url}:`, error.message);
+        if (error instanceof TypeError) {
+            throw new Error('Impossible de joindre le serveur. Vérifiez votre connexion.');
+        }
         throw error;
     }
 }

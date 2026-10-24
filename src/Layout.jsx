@@ -56,13 +56,25 @@ const Layout = () => {
     const notificationButtonRef = useRef(null);
 
     useEffect(() => {
-        try {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            }
-        } catch (e) { }
-    }, []);
+        let isMounted = true;
+        authService.getProfile()
+            .then((profile) => {
+                if (isMounted && profile) {
+                    setUser(profile);
+                    localStorage.setItem('user', JSON.stringify(profile));
+                }
+            })
+            .catch((err) => {
+                // Si la session est invalide ou corrompue (faux token démo restant)
+                console.warn('Session non authentifiée auprès du backend:', err.message);
+                if (err.status === 401 || err.message?.includes('401') || err.message?.includes('token')) {
+                    authService.logout();
+                    navigate('/login');
+                }
+            });
+
+        return () => { isMounted = false; };
+    }, [navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

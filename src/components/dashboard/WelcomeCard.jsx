@@ -28,7 +28,7 @@ const WelcomeCard = () => {
                         className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-white/20 shadow-lg object-cover"
                     />
                     <div className="absolute -bottom-2 -right-2 bg-neon-green text-navy-900 text-xs font-bold px-2 py-0.5 sm:py-1 rounded-full border border-navy-900">
-                        {user.role || 'PRO'}
+                        {user.role || 'AGRICULTEUR'}
                     </div>
                 </div>
 
